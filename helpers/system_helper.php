@@ -1,61 +1,49 @@
 <?php
-//session_start();
-
-	function redirect($page = FALSE,$message = NULL ,$message_type = NULL)
-	{
-		if(is_string($page))
-		{
-			$location=$page;
-		}
-		else
-		{
-			$location = $_SERVER['SCRIPT_NAME'];
+	//Redirect To Page
+		function redirect($page = FALSE, $message = NULL, $message_type = NULL){
+		if (is_string ($page)) {
+			$location = $page;
+		} else {
+			$location = $_SERVER ['SCRIPT_NAME'];
 		}
 
-		if($message != NULL)
-		{
-			$_SESSION['message']=$message;
-			//we used sessions so we can access them after redirecting
-
+		//Check For Message
+		if($message != NULL){
+			//Set Message
+			$_SESSION['message'] = $message;
 		}
-		if($message_type != NULL)
-		{
-			$_SESSION['message_type']= $message_type;
+		//Check For Type
+		if($message_type != NULL){
+			//Set Message Type
+			$_SESSION['message_type'] = $message_type;
 		}
 
-		header('location:'.$location);
-
+		//Redirect
+		header ('Location: '.$location);
 		exit;
-	}
+}
 
-	function displayMessage()
-	{
-		if(!empty($_SESSION['message']))
-		{
-			$message = $_SESSION['message'];
-			
-			if(!empty($_SESSION['message_type']))
-			{//assign type var
-				$message_type = $_SESSION['message_type'];
-				//create output
-				if($message_type =='error')
-				{
-					echo '<div class="alert alert-danger">'.$message.'</div>';
+//Display Message
+		function displayMessage(){
+			if(!empty($_SESSION['message'])) {
+				
+				//Assign Message Var
+				$message = $_SESSION['message'];
+					
+				if(!empty($_SESSION['message_type'])) {
+					//Assign Type Var
+					$message_type = $_SESSION['message_type'];
+					//Create Output
+					if ($message_type == 'error') {
+						echo '<div class="alert alert-danger">' . $message . '</div>';
+					} else {
+						echo '<div class="alert alert-success">' . $message . '</div>';
+					}
 				}
-				else
-				{
-					echo '<div class="alert alert-success">'.$message.'</div>';
-				}
-
+				//Unset Message
+				unset($_SESSION['message'] );
+				unset($_SESSION['message_type'] );
+			} else {
+				echo '';
 			}
-			//unset message
-			unset($_SESSION['message']);
-			unset($_SESSION['message_type']);
 		}
-		else
-		{
-			echo '';
-		}
-
-
-	}

@@ -1,31 +1,20 @@
-<?php include_once 'config/net.php';?>
-	
+<?php include_once 'config/init.php'; ?>
+
 <?php
+$job = new Job;
 
-$job = new job;
+$template = new Template('templates/frontpage.php');
 
-$template = new template('templates/frontpage.php');
+$category = isset($_GET['category']) ? $_GET['category'] : null;
 
-$category = isset($_GET['category'])? $_GET['category']: null;
-
-if($category)
-{
-	$template->jobs=$job->getByCategory($category);
-	$template->title='Jobs In '.$job->getCategory($category)->name;
-}
-else
-{
-	$template->title='latest jobs';
-	//title here is an index
-	$template->jobs=$job->getAlljobs();
+if($category){
+		$template->jobs = $job->getByCategory($category);
+		$template->title = 'Jobs In '. $job->getCategory($category)->name;
+} else {
+		$template->title = 'Latest Jobs';
+		$template->jobs = $job->getAllJobs();
 }
 
+$template->categories = $job->getCategories();
 
-
-//var_dump($template->jobs);
-$template->categories=$job->getCategories();
-
-echo $template;//this line is possible because of the __toString() method
-//this line make the var $categories exists to
-//be used in the front page
-
+echo $template;
