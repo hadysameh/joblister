@@ -1,29 +1,47 @@
-<?php include_once 'config/init.php'; ?>
-
 <?php
-$job = new Job;
+require 'db.php';
+$message = '';
+if (isset ($_POST['name'])  && isset($_POST['email']) ) {
+  $name = $_POST['name'];
+  $email = $_POST['email'];
+  $sql = 'INSERT INTO people(name, email) VALUES(:name, :email)';
+  $statement = $connection->prepare($sql);
+  if ($statement->execute([':name' => $name, ':email' => $email])) {
+    $message = 'data inserted successfully';
+  }
 
-if(isset($_POST['submit'])){
-	//Create Data Array
-	$data = array();
-	$data['job_title'] = $_POST['job_title'];
-	$data['company'] = $_POST['company'];
-	$data['category_id'] = $_POST['category'];
-	$data['description'] = $_POST['description'];
-	$data['location'] = $_POST['location'];
-	$data['salary'] = $_POST['salary'];
-	$data['contact_user'] = $_POST['contact_user'];
-	$data['contact_email'] = $_POST['contact_email'];
 
-	if($job->create($data)){
-		redirect('index.php', 'Your job has been listed', 'success');
-	} else {
-		redirect('index.php', 'Something went wrong', 'error');
-	}
+
 }
 
-$template = new Template('templates/job-create.php');
 
-$template->categories = $job->getCategories();
-
-echo $template;
+ ?>
+<?php require 'header.php'; ?>
+<div class="container">
+  <div class="card mt-5">
+    <div class="card-header">
+      <h2>Create a person</h2>
+    </div>
+    <div class="card-body">
+      <?php if(!empty($message)): ?>
+        <div class="alert alert-success">
+          <?= $message; ?>
+        </div>
+      <?php endif; ?>
+      <form method="post">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" name="name" id="name" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" name="email" id="email" class="form-control">
+        </div>
+        <div class="form-group">
+          <button type="submit" class="btn btn-info">Create a person</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<?php require 'footer.php'; ?>
